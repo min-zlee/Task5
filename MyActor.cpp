@@ -10,7 +10,8 @@ AMyActor::AMyActor()
 	PrimaryActorTick.bCanEverTick = true;
 	Start = FVector2D(0.0f, 0.0f);
 	Current = Start;
-	
+	evCnt = 0;
+	totgDist = 0;
 }
 
 
@@ -19,7 +20,8 @@ void AMyActor::BeginPlay()
 {
 	Super::BeginPlay(); 
 	UE_LOG(LogTemp, Display, TEXT("시작점: (%.2f, %.2f)"), Current.X, Current.Y);
-	move();       
+	move();
+	UE_LOG(LogTemp, Display, TEXT("총 이벤트 발생 횟수: %d"), evCnt);
 }
 
 // Called every frame
@@ -29,20 +31,29 @@ void AMyActor::Tick(float DeltaTime)
 }
 
 void AMyActor::move() {
-	for (int i = 0; i < 10; ++i)
-	{
-		int32 stepx = step();
-		int32 stepy = step();
-
-		Current.X += stepx;
-		Current.Y += stepy;
+	for (int i = 0; i < 10; ++i) {
+		Current.X += step();
+		Current.Y += step();
 
 		UE_LOG(LogTemp, Display, TEXT("현재 위치: (%.2f, %.2f)"), Current.X, Current.Y);
+
+		if (createEvent()) {
+			++evCnt;
+		UE_LOG(LogTemp, Display, TEXT("!이벤트 발생!"));
+		}
+		else {
+		UE_LOG(LogTemp, Display, TEXT("이벤트 발생 안함"));
+		}
 
 	}
 }
 
 int32 AMyActor::step()
+{
+	return FMath::RandRange(0, 1);
+}
+
+int32 AMyActor::createEvent()
 {
 	return FMath::RandRange(0, 1);
 }
